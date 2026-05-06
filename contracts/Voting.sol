@@ -48,10 +48,16 @@ contract Voting {
     }
 
     // Owner xoá toàn bộ phiếu và reset về 0
+    
 function resetAllVotes() public onlyOwner {
     for (uint i = 1; i <= candidatesCount; i++) {
         candidates[i].voteCount = 0;
     }
+    // Code chỉ đưa voteCount của ứng viên về 0, nhưng mapping voters[address] vẫn là true. => Sau khi reset thì các phiếu trước đó ko dc vote lại
+    for (uint i = 1; i <= voterList.length; i++){
+        voters[voterList[i]] = false;
+    }
+    delete voterList;
     emit AllVotesReset();
     }
 
@@ -109,10 +115,21 @@ function resetAllVotes() public onlyOwner {
     }
 
     // Reset quyền vote cho một địa chỉ ví cụ thể
+    // Vấn đề: nếu reset voter, địa chỉ đó vẫn còn trong voterList.
+    // Sau đó nếu người đó vote lại, voterList.push(msg.sender) sẽ thêm địa chỉ đó lần nữa.
+    // Kết quả: getTotalVoters() có thể bị sai vì một địa chỉ có thể xuất hiện nhiều lần.
     function resetVoter(address _voter) public onlyOwner {
         require(voters[_voter], "Nguoi nay chua bo phieu!");
         voters[_voter] = false;
-        
+        // Xoá địa chỉ voter khỏi voterList
+        // Cách này ko làm cho tên voter theo đúng thự tự nhưng sẽ tiết kiệm gas hơn chạy 2 vòng for
+        for (uint i = 0; i < voterList.length; i++){
+            if (voterList[i] == _voter) {
+                voterList[i] = voterList[voterList.length - 1];
+                voterList.pop();
+                break;
+            }
+        }
         emit VoterReset(_voter);
     }
 }

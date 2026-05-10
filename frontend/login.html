@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>CivicVote - Connect Wallet</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#434654",
+                        "inverse-on-surface": "#f1f0f3",
+                        "surface-container-high": "#e8e8ea",
+                        "on-primary-container": "#d4dcff",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#d6e0f4",
+                        "primary-fixed-dim": "#b5c4ff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d9e3f7",
+                        "on-secondary-fixed": "#121c2a",
+                        "tertiary-fixed": "#ffdbcf",
+                        "surface": "#faf9fb",
+                        "on-tertiary-container": "#ffd4c5",
+                        "on-background": "#1a1c1d",
+                        "surface-container": "#eeedf0",
+                        "surface-bright": "#faf9fb",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#ad3b00",
+                        "surface-tint": "#1353d8",
+                        "primary": "#003fb1",
+                        "on-tertiary-fixed": "#380d00",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#555f70",
+                        "on-primary-fixed-variant": "#003dab",
+                        "on-primary-fixed": "#00174d",
+                        "on-secondary-container": "#596374",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#e2e2e4",
+                        "outline-variant": "#c3c5d7",
+                        "inverse-primary": "#b5c4ff",
+                        "on-secondary-fixed-variant": "#3d4757",
+                        "surface-container-low": "#f4f3f5",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9fb",
+                        "on-surface": "#1a1c1d",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "outline": "#737686",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadadc",
+                        "tertiary": "#852b00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "surface-variant": "#e2e2e4",
+                        "inverse-surface": "#2f3032",
+                        "primary-container": "#1a56db",
+                        "primary-fixed": "#dbe1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "xl": "80px",
+                        "gutter": "24px",
+                        "container-max": "1120px",
+                        "md": "24px",
+                        "base": "8px",
+                        "lg": "48px",
+                        "sm": "12px"
+                    },
+                    "fontFamily": {
+                        "h2": ["Lexend"],
+                        "h1": ["Lexend"],
+                        "body-lg": ["Lexend"],
+                        "label-sm": ["Lexend"],
+                        "h3": ["Lexend"],
+                        "label-md": ["Lexend"],
+                        "body-md": ["Lexend"]
+                    },
+                    "fontSize": {
+                        "h2": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "h1": ["36px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "h3": ["20px", { "lineHeight": "1.4", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<!-- Tổng quan bố cục -->
+<body class="bg-surface-container-low min-h-screen flex flex-col items-center justify-center font-body-md text-on-surface p-gutter relative antialiased">
+<!-- 1. LOGO -->
+<div class="flex flex-col items-center mb-md">
+<div class="flex items-center justify-center gap-base">
+<span class="material-symbols-outlined text-primary text-[28px]">how_to_vote</span>
+<h1 class="font-h1 text-[22px] font-bold text-primary m-0 p-0">C-Vote</h1>
+</div>
+<div class="w-[50px] h-[3px] bg-primary mt-sm rounded-full"></div>
+</div>
+<!-- 2. CARD TRẮNG -->
+<div class="bg-surface-container-lowest rounded-[16px] w-full max-w-[420px] p-[40px_44px] shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant flex flex-col items-center text-center">
+<!-- A. ẢNH MINH HỌA -->
+<div class="w-full h-[200px] rounded-xl mb-md bg-gradient-to-br from-secondary-container/30 to-surface-container-high/30 flex items-center justify-center relative overflow-hidden" data-alt="A stylized, modern isometric 3D illustration representing a blockchain voting system. In the center, a deep blue ballot box sits on a platform. A glowing white ballot paper is shown entering the slot. Surrounding the ballot box are four geometric blockchain nodes, connected by dashed, glowing blue lines to the central box. The background is a soft, minimal, light-mode gradient. The overall mood is secure, technological, and trustworthy.">
+<span class="material-symbols-outlined text-[100px] text-primary opacity-80">account_balance</span>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[60px] text-on-primary-container absolute -top-4 -left-4 animate-pulse">hub</span>
+<span class="material-symbols-outlined text-[40px] text-primary-fixed-dim absolute bottom-4 right-4 animate-pulse">data_object</span>
+</div>
+</div>
+<!-- B. NỘI DUNG TEXT -->
+<h2 class="font-h2 text-[26px] font-extrabold text-on-surface mb-sm">Chào mừng đến với&nbsp;<div>C-Vote</div></h2>
+<p class="font-body-md text-[14px] text-secondary mb-lg">Để tham gia bầu cử hay quản trị, bạn cần kết nối ví mã hóa cá nhân của mình. Quy trình này hoàn toàn bảo mật và minh bạch.</p>
+<!-- C. NÚT BẤM -->
+<div class="w-full flex flex-col gap-sm mb-lg">
+<button class="w-full h-[48px] bg-primary text-on-primary rounded-[10px] font-label-md flex items-center justify-center gap-xs hover:bg-on-primary-fixed-variant transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                Kết nối ví MetaMask
+            </button>
+<button class="w-full h-[48px] bg-surface-container-lowest border-[1.5px] border-outline-variant text-on-surface-variant rounded-[10px] font-label-md flex items-center justify-center gap-xs hover:bg-surface-container-low transition-colors focus:outline-none focus:ring-2 focus:ring-outline focus:ring-offset-2">
+                Tìm hiểu thêm về quản trị
+            </button>
+</div>
+<!-- D. FOOTER CARD -->
+<div class="w-full border-t border-outline-variant pt-md flex items-center justify-center gap-xs text-secondary">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span class="font-label-sm text-[12px] font-medium">Bảo mật bởi chuẩn ERC-20</span>
+</div>
+</div>
+<!-- 3. FOOTER NGOÀI CARD -->
+<div class="mt-md font-body-md text-[14px]">
+<span class="text-secondary">Bạn chưa có ví?</span>
+<a class="text-primary font-medium hover:underline ml-xs" href="#">Hướng dẫn tạo ví</a>
+</div>
+<!-- 4. NÚT HỖ TRỢ -->
+<button class="fixed bottom-lg right-lg bg-surface-container-lowest text-on-surface border border-outline-variant rounded-full py-sm px-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex items-center gap-xs hover:bg-surface-container-low transition-colors font-label-md">
+<span class="material-symbols-outlined text-[20px]">help</span>
+        Hỗ trợ
+    </button>
+
+
+</body></html>

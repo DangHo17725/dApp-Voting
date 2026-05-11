@@ -1,6 +1,7 @@
 node_modules/
-artifacts/
 cache/
-typechain-types/
-dist/
+artifacts/
 .env
+coverage/
+typechain-types/
+frontend/deployment-info.json

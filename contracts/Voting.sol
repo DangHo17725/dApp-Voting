@@ -10,20 +10,26 @@ contract Voting {
         bool active;
     }
 
-    // Biến lưu danh sách địa chỉ người đã vote
+    
     address[] public voterList;
     address public owner;
     bool public votingOpen;
     mapping(uint => Candidate) public candidates;
-    mapping(address => bool) public voters;
+    mapping(address => uint) public votedRound;
+    mapping(address => uint) public votedCandidate;
+    uint public currentRound;
     uint public candidatesCount;
+    uint public totalVoters;
+    uint public startTime;
+    uint public endTime;
 
     event CandidateRemoved(uint indexed id);
-    event VotedEvent(uint indexed _candidateId);
+    event VotedEvent(address indexed voter, uint indexed _candidateId, uint round);
     event VotingToggled(bool status);
     event CandidateAdded(uint indexed id, string name);
-    event VoterReset(address indexed voter);
+    event VoterReset(address indexed voter, uint round);
     event AllVotesReset();
+    event VotingTimeUpdated(uint startTime, uint endTime);
     
     modifier onlyOwner() {
         require(msg.sender == owner, "Chi chu hop dong moi co quyen nay");
@@ -33,11 +39,34 @@ contract Voting {
     constructor() {
         owner = msg.sender;
         votingOpen = true;
+        currentRound = 1;
+        startTime = block.timestamp;
+        endTime = block.timestamp + 7 days;
+
         addCandidate("Candidate 1 - Nguyen Van A");
         addCandidate("Candidate 2 - Tran Thi B");
     }
 
+    function setVotingTime(uint _startTime, uint _endTime) public onlyOwner {
+        require(_startTime < _endTime, unicode"Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc");
+
+        startTime = _startTime;
+        endTime = _endTime;
+
+        // Nếu owner set thời gian mới thì tự mở voting
+        votingOpen = true;
+
+        emit VotingTimeUpdated(_startTime, _endTime);
+    }
+
+    function isVotingOpen() public view returns (bool) {
+        return votingOpen && block.timestamp >= startTime && block.timestamp <= endTime;
+    }
+
     function addCandidate(string memory _name) private {
+        // Kiểm tra tên ứng viên rỗng
+        require(bytes(_name).length > 0, "Ten ung cu vien khong duoc rong");
+
         candidatesCount++;
         candidates[candidatesCount] = Candidate(candidatesCount, _name, 0, true);
         emit CandidateAdded(candidatesCount, _name);
@@ -50,15 +79,14 @@ contract Voting {
 
     // Owner xoá toàn bộ phiếu và reset về 0
     
-function resetAllVotes() public onlyOwner {
+    function resetAllVotes() public onlyOwner {
     for (uint i = 1; i <= candidatesCount; i++) {
         candidates[i].voteCount = 0;
     }
-    // Code chỉ đưa voteCount của ứng viên về 0, nhưng mapping voters[address] vẫn là true. => Sau khi reset thì các phiếu trước đó ko dc vote lại
-    for (uint i = 1; i <= voterList.length; i++){
-        voters[voterList[i]] = false;
-    }
+    currentRound++;
     delete voterList;
+    totalVoters = 0;
+
     emit AllVotesReset();
     }
 
@@ -68,16 +96,20 @@ function resetAllVotes() public onlyOwner {
 
     function vote(uint _candidateId) public {
         require(votingOpen, "Cuoc bau cu da ket thuc!");
-        require(!voters[msg.sender], "Ban da bo phieu roi!");
+        require(block.timestamp >= startTime, "Cuoc bau cu chua bat dau!");
+        require(block.timestamp <= endTime, "Cuoc bau cu da ket thuc!");
+        require(votedRound[msg.sender] != currentRound, "Ban da bo phieu roi!");
         require(
             _candidateId > 0 && _candidateId <= candidatesCount,
             "ID ung cu vien khong hop le!"
         );
         require(candidates[_candidateId].active, "Ung cu vien da bi xoa!");
-        voters[msg.sender] = true;
+        votedRound[msg.sender] = currentRound;
+        votedCandidate[msg.sender] = _candidateId;
         candidates[_candidateId].voteCount++;
+        totalVoters++;
         voterList.push(msg.sender);
-        emit VotedEvent(_candidateId);
+        emit VotedEvent(msg.sender ,_candidateId, currentRound);
     }
 
     // Helper: get all candidates at once for Frontend
@@ -127,17 +159,17 @@ function resetAllVotes() public onlyOwner {
     // Sau đó nếu người đó vote lại, voterList.push(msg.sender) sẽ thêm địa chỉ đó lần nữa.
     // Kết quả: getTotalVoters() có thể bị sai vì một địa chỉ có thể xuất hiện nhiều lần.
     function resetVoter(address _voter) public onlyOwner {
-        require(voters[_voter], "Nguoi nay chua bo phieu!");
-        voters[_voter] = false;
-        // Xoá địa chỉ voter khỏi voterList
-        // Cách này ko làm cho tên voter theo đúng thự tự nhưng sẽ tiết kiệm gas hơn chạy 2 vòng for
-        for (uint i = 0; i < voterList.length; i++){
-            if (voterList[i] == _voter) {
-                voterList[i] = voterList[voterList.length - 1];
-                voterList.pop();
-                break;
-            }
+        require(votedRound[_voter] == currentRound, "Nguoi nay chua bo phieu!");
+        uint candidateId = votedCandidate[_voter];
+        if (candidateId > 0 && candidates[candidateId].voteCount > 0) {
+            candidates[candidateId].voteCount--;
         }
-        emit VoterReset(_voter);
+        votedRound[_voter] = 0;
+        votedCandidate[_voter] = 0;
+        if (totalVoters > 0) {
+            totalVoters--;
+        }
+
+        emit VoterReset(_voter, currentRound);
     }
 }

@@ -10,7 +10,7 @@ contract Voting {
         bool active;
     }
 
-    // Biến lưu danh sách địa chỉ người đã vote
+    
     address[] public voterList;
     address public owner;
     bool public votingOpen;
@@ -20,6 +20,8 @@ contract Voting {
     uint public currentRound;
     uint public candidatesCount;
     uint public totalVoters;
+    uint public startTime;
+    uint public endTime;
 
     event CandidateRemoved(uint indexed id);
     event VotedEvent(address indexed voter, uint indexed _candidateId, uint round);
@@ -27,6 +29,7 @@ contract Voting {
     event CandidateAdded(uint indexed id, string name);
     event VoterReset(address indexed voter, uint round);
     event AllVotesReset();
+    event VotingTimeUpdated(uint startTime, uint endTime);
     
     modifier onlyOwner() {
         require(msg.sender == owner, "Chi chu hop dong moi co quyen nay");
@@ -37,11 +40,29 @@ contract Voting {
         owner = msg.sender;
         votingOpen = true;
         currentRound = 1;
+        startTime = block.timestamp;
+        endTime = block.timestamp + 7 days;
+
         addCandidate("Candidate 1 - Nguyen Van A");
         addCandidate("Candidate 2 - Tran Thi B");
     }
 
-    
+    function setVotingTime(uint _startTime, uint _endTime) public onlyOwner {
+        require(_startTime < _endTime, unicode"Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc");
+
+        startTime = _startTime;
+        endTime = _endTime;
+
+        // Nếu owner set thời gian mới thì tự mở voting
+        votingOpen = true;
+
+        emit VotingTimeUpdated(_startTime, _endTime);
+    }
+
+    function isVotingOpen() public view returns (bool) {
+        return votingOpen && block.timestamp >= startTime && block.timestamp <= endTime;
+    }
+
     function addCandidate(string memory _name) private {
         // Kiểm tra tên ứng viên rỗng
         require(bytes(_name).length > 0, "Ten ung cu vien khong duoc rong");
@@ -75,6 +96,8 @@ contract Voting {
 
     function vote(uint _candidateId) public {
         require(votingOpen, "Cuoc bau cu da ket thuc!");
+        require(block.timestamp >= startTime, "Cuoc bau cu chua bat dau!");
+        require(block.timestamp <= endTime, "Cuoc bau cu da ket thuc!");
         require(votedRound[msg.sender] != currentRound, "Ban da bo phieu roi!");
         require(
             _candidateId > 0 && _candidateId <= candidatesCount,

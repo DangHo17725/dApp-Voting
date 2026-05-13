@@ -5,8 +5,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<!-- Ethers.js v6 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -116,19 +114,19 @@
 </div>
 <ul class="flex-1 flex flex-col gap-sm">
 <li class="">
-<a class="flex items-center gap-sm px-sm py-sm rounded hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-on-surface-variant font-label-md text-label-md" href="#">
+<a class="flex items-center gap-sm px-sm py-sm rounded hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-on-surface-variant font-label-md text-label-md" href="voting.html">
 <span class="material-symbols-outlined">how_to_vote</span>
                 Voting
             </a>
 </li>
 <li class="">
-<a class="flex items-center gap-sm px-sm py-sm rounded hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-on-surface-variant font-label-md text-label-md" href="#">
+<a class="flex items-center gap-sm px-sm py-sm rounded hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors duration-200 text-secondary dark:text-secondary-fixed-dim hover:text-on-surface dark:hover:text-on-surface-variant font-label-md text-label-md" href="Dashboard.html">
 <span class="material-symbols-outlined">dashboard</span>
                 Dashboard
             </a>
 </li>
 <li class="">
-<a class="flex items-center gap-sm px-sm py-sm rounded text-primary dark:text-primary-fixed-dim font-semibold border-r-2 border-primary dark:border-primary-fixed-dim bg-surface-container-low opacity-90 transition-opacity duration-150 font-label-md text-label-md" href="#">
+<a class="flex items-center gap-sm px-sm py-sm rounded text-primary dark:text-primary-fixed-dim font-semibold border-r-2 border-primary dark:border-primary-fixed-dim bg-surface-container-low opacity-90 transition-opacity duration-150 font-label-md text-label-md" href="admin.html">
 <span class="material-symbols-outlined">admin_panel_settings</span>
                 Admin
             </a>
@@ -149,8 +147,8 @@
 </div>
 <div class="flex items-center gap-md">
 <div class="flex items-center gap-xs px-sm py-xs border border-[#E5E7EB] rounded bg-white text-on-surface font-label-md text-label-md tracking-widest">
-<span class="material-symbols-outlined text-[18px] text-secondary">account_balance_wallet</span>
-                0x1234...abcd
+<span  class="material-symbols-outlined text-[18px] text-secondary">account_balance_wallet</span>
+<div id="walletAddressDOM" class="px-3 py-1.5 border border-border rounded text-sm text-text-muted font-medium bg-slate-50">0x1234...abc</div>
             </div>
 </div>
 </header>
@@ -158,7 +156,7 @@
 <main class="flex-1 p-[32px] w-full max-w-container-max mx-auto">
 <!-- Access Control - Hidden by default, script can toggle -->
 <div class="hidden flex-col items-center justify-center py-20 text-center" id="access-denied">
-<h2 class="text-[20px] font-semibold text-[#111827]">⛔ Bạn không có quyền truy cập trang này. Vui lòng kết nối bằng ví của chủ sở hữu contract.</h2>
+<h2 class="text-[20px] font-semibold text-[#111827]"> Bạn không có quyền truy cập trang này. Vui lòng kết nối bằng ví của chủ sở hữu contract.</h2>
 </div>
 <div id="admin-content">
 <header class="mb-md">
@@ -184,18 +182,24 @@
 <div class="flex flex-col gap-sm flex-1">
 <div class="flex justify-between items-center py-xs">
 <span class="font-label-md text-label-md text-secondary">Mạng lưới</span>
-<span class="px-xs py-[2px] bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded">Sepolia Testnet</span>
+<span id="networkNameDOM" class="px-xs py-[2px] bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded">Loading</span>
 </div>
 <div class="flex justify-between items-center py-xs">
 <span class="font-label-md text-label-md text-secondary">Chủ sở hữu</span>
-<span class="font-label-md text-label-md text-on-surface tracking-widest">0x1234...abcd</span>
+<span id="contractOwnerDOM" class="font-label-md text-label-md text-on-surface tracking-widest">Loading...</span>
 </div>
 <div class="flex justify-between items-center py-xs">
 <span class="font-label-md text-label-md text-secondary">Địa chỉ hợp đồng</span>
 <div class="flex items-center gap-xs">
-<span class="font-label-md text-label-md text-on-surface tracking-widest">0x892a...3F90</span>
-<button class="text-secondary hover:text-primary transition-colors">
-<span class="material-symbols-outlined text-[18px]">content_copy</span>
+<span id="contractAddressDOM" class="font-label-md text-label-md text-on-surface tracking-widest">Loading...</span>
+<button id="btnCopyContractAddress"
+        type="button"
+        title="Copy địa chỉ hợp đồng"
+        class="text-secondary hover:text-primary transition-colors">
+    <span id="copyContractIcon"
+          class="material-symbols-outlined text-[18px]">
+        content_copy
+    </span>
 </button>
 </div>
 </div>
@@ -210,15 +214,15 @@
 <div class="flex flex-col gap-md flex-1">
 <div class="flex flex-col gap-xs">
 <label class="font-label-md text-label-md text-on-surface">Thời gian bắt đầu</label>
-<input class="w-full border-outline-variant focus:border-primary focus:ring-0 rounded-DEFAULT font-body-md text-on-surface bg-surface-container-lowest h-11 px-sm" type="datetime-local" placeholder="2026-05-01T09:00">
+<input id="startTimeInput" class="w-full border-outline-variant focus:border-primary focus:ring-0 rounded-DEFAULT font-body-md text-on-surface bg-surface-container-lowest h-11 px-sm" type="datetime-local" placeholder="2026-05-01T09:00">
 </div>
 <div class="flex flex-col gap-xs">
 <label class="font-label-md text-label-md text-on-surface">Thời gian kết thúc</label>
-<input class="w-full border-outline-variant focus:border-primary focus:ring-0 rounded-DEFAULT font-body-md text-on-surface bg-surface-container-lowest h-11 px-sm" type="datetime-local" placeholder="2026-05-11T21:00">
+<input id="endTimeInput" class="w-full border-outline-variant focus:border-primary focus:ring-0 rounded-DEFAULT font-body-md text-on-surface bg-surface-container-lowest h-11 px-sm" type="datetime-local" placeholder="2026-05-11T21:00">
 </div>
 </div>
 <div class="mt-md flex justify-end">
-<button class="bg-[#1A3FBF] text-white h-[44px] px-md rounded-DEFAULT font-label-md text-label-md hover:bg-blue-800 transition-colors flex items-center gap-xs">
+<button id="btnSaveVotingTime" class="bg-[#1A3FBF] text-white h-[44px] px-md rounded-DEFAULT font-label-md text-label-md hover:bg-blue-800 transition-colors flex items-center gap-xs">
 <span class="material-symbols-outlined text-[18px]">save</span>
                             Lưu cài đặt
                         </button>
@@ -233,8 +237,8 @@
 <h3 class="font-h3 text-h3 text-on-surface">Quản lý ứng viên</h3>
 </div>
 <div class="flex items-center gap-sm">
-<input class="border-outline-variant focus:border-primary focus:ring-0 rounded-DEFAULT font-body-md text-on-surface bg-surface-container-lowest h-[44px] px-sm w-[240px]" placeholder="Nhập tên ứng viên mới..." type="text">
-<button class="bg-[#F3F4F6] text-on-surface h-[44px] px-md rounded-DEFAULT font-label-md text-label-md hover:bg-gray-200 flex items-center gap-xs transition-colors border border-outline-variant">
+<input id="newCandidateName" class="border-outline-variant focus:border-primary focus:ring-0 rounded-DEFAULT font-body-md text-on-surface bg-surface-container-lowest h-[44px] px-sm w-[240px]" placeholder="Nhập tên ứng viên mới..." type="text">
+<button id="btnAddCandidate" class="bg-[#F3F4F6] text-on-surface h-[44px] px-md rounded-DEFAULT font-label-md text-label-md hover:bg-gray-200 flex items-center gap-xs transition-colors border border-outline-variant">
 <span class="material-symbols-outlined text-[18px]">add</span>
                             Thêm
                         </button>
@@ -249,33 +253,7 @@
 </tr>
 </thead>
 <tbody class="font-body-md text-on-surface">
-<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors">
-<td class="py-sm px-sm font-label-sm text-label-sm text-secondary">01</td>
-<td class="py-sm px-sm">Nguyễn Văn Thành</td>
-<td class="py-sm px-sm text-right">
-<button class="text-secondary hover:text-error transition-colors p-[2px]">
-<span class="material-symbols-outlined">delete</span>
-</button>
-</td>
-</tr>
-<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors">
-<td class="py-sm px-sm font-label-sm text-label-sm text-secondary">02</td>
-<td class="py-sm px-sm">Trần Thị Mai</td>
-<td class="py-sm px-sm text-right">
-<button class="text-secondary hover:text-error transition-colors p-[2px]">
-<span class="material-symbols-outlined">delete</span>
-</button>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-lowest transition-colors">
-<td class="py-sm px-sm font-label-sm text-label-sm text-secondary">03</td>
-<td class="py-sm px-sm">Lê Hoàng Hải</td>
-<td class="py-sm px-sm text-right">
-<button class="text-secondary hover:text-error transition-colors p-[2px]">
-<span class="material-symbols-outlined">delete</span>
-</button>
-</td>
-</tr>
+<tbody id="adminCandidateList"></tbody>
 </tbody>
 </table>
 </div>
@@ -291,6 +269,233 @@
     // document.getElementById('access-denied').classList.remove('hidden');
     // document.getElementById('access-denied').classList.add('flex');
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<script src="app.js"></script>
+<script>
+    window.addEventListener('load', async () => {
+        // Gọi hàm kết nối ví từ app.js
+        const isConnected = await initWeb3();
+        
+        if (!isConnected) {
+            // Nếu chưa kết nối, có thể đá người dùng về trang login
+            // window.location.href = "login.html";
+            console.log("Vui lòng kết nối ví!");
+        } else {
+            console.log("Đã kết nối ví thành công trên trang này!");
+            // Nơi đây chúng ta sẽ gọi các hàm Web3 tải dữ liệu (Phần 2)
+        }
+    });
+</script>
+<script>
+    // Hàm này sẽ chạy ngay khi trang web tải xong
+    window.addEventListener('load', async () => {
+        const isConnected = await initWeb3(); // Gọi hàm từ app.js
+        if (isConnected) {
+            await setupAdminPage();
+        }
+    });
 
+    async function setupAdminPage() {
+        try {
+            await loadNetworkInfo();
+            // Lấy và hiển thị thông tin cơ bản của Contract
+            const ownerAddress = await contract.owner();
+            document.getElementById('contractOwnerDOM').innerText = 
+                ownerAddress.substring(0, 6) + "..." + ownerAddress.substring(38);
+            document.getElementById('contractAddressDOM').innerText = 
+                CONTRACT_ADDRESS.substring(0, 6) + "..." + CONTRACT_ADDRESS.substring(38);
 
+            setupCopyContractAddressButton();
+            
+            await loadAdminCandidates();
+            await loadVotingTime();
+            setupVotingTimeButton();
+            // Xử lý sự kiện khi bấm nút "Thêm"
+            document.getElementById('btnAddCandidate').addEventListener('click', async () => {
+                const name = document.getElementById('newCandidateName').value;
+                if (!name) return alert("Vui lòng nhập tên ứng viên!");
+
+                try {
+                    // Gọi hàm addCandidatePublic trong Smart Contract
+                    const tx = await contract.addCandidatePublic(name);
+                    alert("Giao dịch đang được gửi... Vui lòng xác nhận trên MetaMask.");
+                    await tx.wait(); // Chờ block xác nhận
+                    
+                    alert("Thêm ứng viên thành công!");
+                    document.getElementById('newCandidateName').value = ""; // Reset ô nhập
+                    await loadAdminCandidates(); // Tải lại bảng để cập nhật list mới
+                } catch (err) {
+                    console.error(err);
+                    alert("Lỗi: Chỉ chủ sở hữu mới có quyền thêm ứng viên!");
+                }
+            });
+
+        } catch (error) {
+            console.error("Lỗi khi thiết lập trang Admin:", error);
+        }
+    }
+
+    // Hàm lấy dữ liệu và vẽ bảng
+    async function loadAdminCandidates() {
+        const [ids, names, voteCounts] = await contract.getAllCandidates();
+        const tbody = document.getElementById('adminCandidateList');
+        tbody.innerHTML = ""; // Xoá sạch bảng trước khi vẽ lại
+
+        for (let i = 0; i < ids.length; i++) {
+            // Chỉ hiện những ứng viên có tên (không bị xoá)
+            if (names[i] !== "") {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-surface-variant hover:bg-surface-container-lowest transition-colors";
+                
+                tr.innerHTML = `
+                    <td class="py-sm px-sm font-label-sm text-secondary">${ids[i]}</td>
+                    <td class="py-sm px-sm font-medium">${names[i]}</td>
+                    <td class="py-sm px-sm text-right">
+                        <button onclick="handleDelete(${ids[i]})" class="text-secondary hover:text-error transition-colors p-[2px]">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+    }
+
+    // Hàm xử lý việc Xoá ứng viên
+    async function handleDelete(candidateId) {
+        if (confirm(`Bạn có chắc chắn muốn xoá ứng viên ID: ${candidateId}?`)) {
+            try {
+                const tx = await contract.removeCandidate(candidateId);
+                alert("Đang xử lý giao dịch xoá...");
+                await tx.wait();
+                alert("Đã xoá ứng viên thành công!");
+                await loadAdminCandidates();
+            } catch (err) {
+                console.error(err);
+                alert("Lỗi khi xoá ứng viên!");
+            }
+        }
+    }
+
+    async function loadVotingTime() {
+    try {
+        const start = await contract.startTime();
+        const end = await contract.endTime();
+
+        const startDate = new Date(Number(start) * 1000);
+        const endDate = new Date(Number(end) * 1000);
+
+        document.getElementById("startTimeInput").value = toDateTimeLocal(startDate);
+        document.getElementById("endTimeInput").value = toDateTimeLocal(endDate);
+    } catch (err) {
+        console.error("Lỗi khi tải thời gian bầu cử:", err);
+    }
+}
+
+    function setupVotingTimeButton() {
+        const btn = document.getElementById("btnSaveVotingTime");
+
+        btn.addEventListener("click", async () => {
+            const startValue = document.getElementById("startTimeInput").value;
+            const endValue = document.getElementById("endTimeInput").value;
+
+            if (!startValue || !endValue) {
+                alert("Vui lòng nhập đủ thời gian bắt đầu và kết thúc!");
+                return;
+            }
+
+            const startTimestamp = Math.floor(new Date(startValue).getTime() / 1000);
+            const endTimestamp = Math.floor(new Date(endValue).getTime() / 1000);
+
+            if (startTimestamp >= endTimestamp) {
+                alert("Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
+                return;
+            }
+
+            try {
+                const tx = await contract.setVotingTime(startTimestamp, endTimestamp);
+                alert("Đang gửi giao dịch cập nhật thời gian bầu cử...");
+                await tx.wait();
+
+                alert("Cập nhật thời gian bầu cử thành công!");
+                await loadVotingTime();
+            } catch (err) {
+                console.error("Lỗi khi lưu thời gian:", err);
+                alert("Lỗi khi lưu thời gian. Chỉ owner mới có quyền thay đổi.");
+            }
+        });
+    }
+
+    function toDateTimeLocal(date) {
+        const offset = date.getTimezoneOffset();
+        const localDate = new Date(date.getTime() - offset * 60 * 1000);
+        return localDate.toISOString().slice(0, 16);
+    }
+    function setupCopyContractAddressButton() {
+    const copyBtn = document.getElementById("btnCopyContractAddress");
+    const copyIcon = document.getElementById("copyContractIcon");
+
+    if (!copyBtn) return;
+
+    copyBtn.addEventListener("click", async () => {
+        try {
+            await navigator.clipboard.writeText(CONTRACT_ADDRESS);
+
+            if (copyIcon) {
+                copyIcon.innerText = "check";
+            }
+
+            copyBtn.title = "Đã copy địa chỉ hợp đồng";
+
+            setTimeout(() => {
+                if (copyIcon) {
+                    copyIcon.innerText = "content_copy";
+                }
+
+                copyBtn.title = "Copy địa chỉ hợp đồng";
+            }, 1200);
+
+        } catch (err) {
+            console.error("Lỗi khi copy địa chỉ hợp đồng:", err);
+
+            // Cách dự phòng cho một số trình duyệt không cho dùng navigator.clipboard
+            const tempInput = document.createElement("input");
+            tempInput.value = CONTRACT_ADDRESS;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            alert("Đã copy địa chỉ hợp đồng!");
+        }
+    });
+}
+async function loadNetworkInfo() {
+    try {
+        const network = await provider.getNetwork();
+        const chainId = Number(network.chainId);
+
+        const networkNames = {
+            1: "Ethereum Mainnet",
+            11155111: "Sepolia Testnet",
+            31337: "Hardhat Localhost",
+            1337: "Localhost",
+            80001: "Polygon Mumbai",
+            137: "Polygon Mainnet",
+            56: "BNB Smart Chain",
+            97: "BNB Testnet"
+        };
+
+        const networkName = networkNames[chainId] || `Unknown Network (${chainId})`;
+
+        document.getElementById("networkNameDOM").innerText = networkName;
+
+        console.log("Network hiện tại:", networkName);
+        console.log("Chain ID:", chainId);
+    } catch (err) {
+        console.error("Lỗi khi lấy thông tin mạng:", err);
+        document.getElementById("networkNameDOM").innerText = "Unknown";
+    }
+}
+</script>
 </body></html>

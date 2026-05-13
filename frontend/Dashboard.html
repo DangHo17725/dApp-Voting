@@ -78,12 +78,6 @@
                 </a>
 </nav>
 </div>
-<!-- Button Bottom -->
-<div class="p-4">
-<button class="w-full bg-primary hover:bg-primary-dark text-white text-sm font-medium py-2 px-4 rounded transition-colors">
-                New Proposal
-            </button>
-</div>
 </aside>
 <!-- Cột phải: Nội dung chính (Fluid) -->
 <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -116,7 +110,7 @@
 <span class="text-sm font-medium text-text-muted">Tổng số phiếu</span>
 <div class="flex items-end justify-between">
 <span id="totalVotesCount" class="text-3xl font-bold text-text-main">0</span>
-<span class="text-xs font-semibold text-success bg-success/10 px-2 py-1 rounded">+12%</span>
+<span id="voteChangePercent" class="text-xs font-semibold text-success bg-success/10 px-2 py-1 rounded">+0%</span>
 </div>
 </div>
 <!-- Thẻ 2 -->
@@ -228,4 +222,71 @@
         </div>
     </div>
 </div>
-</body></html>
+
+<script>
+    function updateVoteChangePercent(currentTotalVotes) {
+        const percentElement = document.getElementById("voteChangePercent");
+
+        if (!percentElement) return;
+
+        const previousTotalVotes = Number(localStorage.getItem("previousTotalVotes")) || 0;
+        const currentVotes = Number(currentTotalVotes);
+
+        let percentChange = 0;
+
+        if (previousTotalVotes > 0) {
+            percentChange = ((currentVotes - previousTotalVotes) / previousTotalVotes) * 100;
+        } else {
+            percentChange = currentVotes > 0 ? 100 : 0;
+        }
+
+        const roundedPercent = percentChange.toFixed(0);
+
+        percentElement.classList.remove(
+            "text-success",
+            "text-danger",
+            "text-text-muted",
+            "bg-success/10",
+            "bg-danger/10",
+            "bg-slate-100"
+        );
+
+        if (percentChange > 0) {
+            percentElement.textContent = `+${roundedPercent}%`;
+            percentElement.classList.add("text-success", "bg-success/10");
+        } else if (percentChange < 0) {
+            percentElement.textContent = `${roundedPercent}%`;
+            percentElement.classList.add("text-danger", "bg-danger/10");
+        } else {
+            percentElement.textContent = "0%";
+            percentElement.classList.add("text-text-muted", "bg-slate-100");
+        }
+
+        localStorage.setItem("previousTotalVotes", currentVotes);
+    }
+
+    function observeTotalVotesChange() {
+        const totalVotesElement = document.getElementById("totalVotesCount");
+
+        if (!totalVotesElement) return;
+
+        const observer = new MutationObserver(() => {
+            const currentTotalVotes = Number(totalVotesElement.textContent) || 0;
+            updateVoteChangePercent(currentTotalVotes);
+        });
+
+        observer.observe(totalVotesElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+
+        const initialTotalVotes = Number(totalVotesElement.textContent) || 0;
+        updateVoteChangePercent(initialTotalVotes);
+    }
+
+    document.addEventListener("DOMContentLoaded", observeTotalVotesChange);
+</script>
+
+</body>
+</html>

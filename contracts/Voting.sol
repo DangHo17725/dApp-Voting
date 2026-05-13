@@ -42,9 +42,6 @@ contract Voting {
         currentRound = 1;
         startTime = block.timestamp;
         endTime = block.timestamp + 7 days;
-
-        addCandidate("Candidate 1 - Nguyen Van A");
-        addCandidate("Candidate 2 - Tran Thi B");
     }
 
     function setVotingTime(uint _startTime, uint _endTime) public onlyOwner {
@@ -147,6 +144,7 @@ contract Voting {
     function removeCandidate(uint _candidateId) public onlyOwner {
         require(_candidateId > 0 && _candidateId <= candidatesCount, "ID khong hop le");
         require(candidates[_candidateId].active, "Ung cu vien da bi xoa");
+        require(candidates[_candidateId].voteCount == 0, "Khong the xoa ung cu vien da co phieu");
         // Xóa thông tin ứng cử viên
         candidates[_candidateId].name = "";
         candidates[_candidateId].voteCount = 0;

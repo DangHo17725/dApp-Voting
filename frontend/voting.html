@@ -268,7 +268,7 @@
 
     async function loadVotingCandidates() {
         try {
-            const [ids, names, voteCounts] = await contract.getAllCandidates();
+            const [ids, names, voteCounts, actives] = await readContract.getAllCandidates();
 
             const tbody = document.getElementById("candidateListDOM");
             tbody.innerHTML = "";
@@ -279,8 +279,9 @@
                 const id = Number(ids[i]);
                 const name = names[i];
                 const voteCount = Number(voteCounts[i]);
+                const active = actives[i];
 
-                if (!name || name.trim() === "") {
+                if (!active || !name || name.trim() === "") {
                     continue;
                 }
 
@@ -371,7 +372,7 @@
                 voteBtn.disabled = true;
                 voteBtn.classList.add("opacity-50", "cursor-not-allowed");
 
-                const tx = await contract.vote(selectedCandidateId);
+                const tx = await writeContract.vote(selectedCandidateId);
                 alert("Giao dịch đang được gửi. Vui lòng xác nhận trên MetaMask.");
 
                 await tx.wait();

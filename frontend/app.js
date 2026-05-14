@@ -25,6 +25,8 @@ const CONTRACT_ABI = [
 
 let provider;
 let signer;
+let readContract;
+let writeContract;
 let contract;
 let currentAccount = null;
 
@@ -51,9 +53,25 @@ async function initWeb3() {
 
             // Khởi tạo Ethers v6
             provider = new ethers.BrowserProvider(window.ethereum);
+
+            const network = await provider.getNetwork();
+            const chainId = Number(network.chainId);
+
+            if (chainId !== 11155111) {
+                alert("Vui lòng chuyển MetaMask sang mạng Sepolia!");
+                return false;
+            }
+
+            // Contract chỉ để đọc dữ liệu
+            readContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+
+            // Contract để gửi giao dịch
             signer = await provider.getSigner();
-            contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-            
+            writeContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+            // Giữ lại biến contract để các file cũ không bị vỡ
+            contract = writeContract;
+
             return true;
         }
     }

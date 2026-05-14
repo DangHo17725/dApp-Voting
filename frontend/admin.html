@@ -294,7 +294,7 @@
         try {
             await loadNetworkInfo();
             // Lấy và hiển thị thông tin cơ bản của Contract
-            const ownerAddress = await contract.owner();
+            const ownerAddress = await readContract.owner();
             document.getElementById('contractOwnerDOM').innerText = 
                 ownerAddress.substring(0, 6) + "..." + ownerAddress.substring(38);
             document.getElementById('contractAddressDOM').innerText = 
@@ -312,7 +312,7 @@
 
                 try {
                     // Gọi hàm addCandidatePublic trong Smart Contract
-                    const tx = await contract.addCandidatePublic(name);
+                    const tx = await writeContract.addCandidatePublic(name);
                     alert("Giao dịch đang được gửi... Vui lòng xác nhận trên MetaMask.");
                     await tx.wait(); // Chờ block xác nhận
                     
@@ -332,7 +332,7 @@
 
     // Hàm lấy dữ liệu và vẽ bảng
     async function loadAdminCandidates() {
-        const [ids, names, voteCounts] = await contract.getAllCandidates();
+        const [ids, names, voteCounts, actives] = await readContract.getAllCandidates();
         const tbody = document.getElementById('adminCandidateList');
         tbody.innerHTML = ""; // Xoá sạch bảng trước khi vẽ lại
 
@@ -360,7 +360,7 @@
     async function handleDelete(candidateId) {
         if (confirm(`Bạn có chắc chắn muốn xoá ứng viên ID: ${candidateId}?`)) {
             try {
-                const tx = await contract.removeCandidate(candidateId);
+                const tx = await writeContract.removeCandidate(id);
                 alert("Đang xử lý giao dịch xoá...");
                 await tx.wait();
                 alert("Đã xoá ứng viên thành công!");
@@ -374,8 +374,8 @@
 
     async function loadVotingTime() {
     try {
-        const start = await contract.startTime();
-        const end = await contract.endTime();
+        const start = await readContract.startTime();
+        const end = await readContract.endTime();
 
         const startDate = new Date(Number(start) * 1000);
         const endDate = new Date(Number(end) * 1000);
@@ -408,7 +408,7 @@
             }
 
             try {
-                const tx = await contract.setVotingTime(startTimestamp, endTimestamp);
+                const tx = await writeContract.setVotingTime(startTimestamp, endTimestamp);
                 alert("Đang gửi giao dịch cập nhật thời gian bầu cử...");
                 await tx.wait();
 

@@ -11,7 +11,6 @@ contract Voting {
     }
 
     
-    address[] public voterList;
     address public owner;
     bool public votingOpen;
     mapping(uint => Candidate) public candidates;
@@ -80,8 +79,8 @@ contract Voting {
     for (uint i = 1; i <= candidatesCount; i++) {
         candidates[i].voteCount = 0;
     }
+
     currentRound++;
-    delete voterList;
     totalVoters = 0;
 
     emit AllVotesReset();
@@ -92,9 +91,7 @@ contract Voting {
     }
 
     function vote(uint _candidateId) public {
-        require(votingOpen, "Cuoc bau cu da ket thuc!");
-        require(block.timestamp >= startTime, "Cuoc bau cu chua bat dau!");
-        require(block.timestamp <= endTime, "Cuoc bau cu da ket thuc!");
+        require(isVotingOpen(), "Cuoc bau cu khong mo!");
         require(votedRound[msg.sender] != currentRound, "Ban da bo phieu roi!");
         require(
             _candidateId > 0 && _candidateId <= candidatesCount,
@@ -105,7 +102,6 @@ contract Voting {
         votedCandidate[msg.sender] = _candidateId;
         candidates[_candidateId].voteCount++;
         totalVoters++;
-        voterList.push(msg.sender);
         emit VotedEvent(msg.sender ,_candidateId, currentRound);
     }
 
@@ -131,13 +127,9 @@ contract Voting {
     }
     // Lấy tổng số lượng cử tri đã tham gia
     function getTotalVoters() public view returns (uint256) {
-        return voterList.length;
+        return totalVoters;
     }
 
-    // Lấy danh sách địa chỉ cử tri
-    function getVoterList() public view returns (address[] memory) {
-        return voterList;
-    }
 
     // Xóa ứng cử viên (Đặt lại thông tin về rỗng và 0)
     // Chưa xoá hoàn toán ứng viên khỏi mapping

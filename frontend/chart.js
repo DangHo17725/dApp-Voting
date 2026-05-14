@@ -39,13 +39,14 @@ function formatPercent(value, total) {
     return ((value / total) * 100).toFixed(1) + "%";
 }
 
-function getActiveCandidates(ids, names, voteCounts) {
+function getActiveCandidates(ids, names, voteCounts, actives) {
     const candidates = [];
 
     for (let i = 0; i < ids.length; i++) {
         const name = names[i];
+        const active = actives[i];
 
-        if (!name || name.trim() === "") {
+        if (!active || !name || name.trim() === "") {
             continue;
         }
 
@@ -297,12 +298,19 @@ function updateLegend(candidates) {
 }
 
 async function updateDashboard() {
-    if (!contract) return;
+    if (!readContract) return;
 
     try {
-        const [ids, names, voteCounts] = await contract.getAllCandidates();
+        const [ids, names, voteCounts, actives] = await readContract.getAllCandidates();
 
-        const candidates = getActiveCandidates(ids, names, voteCounts);
+        console.log("Raw candidates:", {
+            ids: ids.map(Number),
+            names,
+            voteCounts: voteCounts.map(Number),
+            actives
+        });
+
+        const candidates = getActiveCandidates(ids, names, voteCounts, actives);
         const total = candidates.reduce((sum, candidate) => sum + candidate.votes, 0);
 
         updateStatCards(candidates, total);
@@ -313,6 +321,7 @@ async function updateDashboard() {
         console.log("Dashboard đã cập nhật:", candidates);
     } catch (error) {
         console.error("Lỗi cập nhật dashboard:", error);
+        alert("Không thể tải ứng viên từ smart contract. Kiểm tra CONTRACT_ADDRESS, ABI và mạng Sepolia.");
     }
 }
 
